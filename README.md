@@ -1,6 +1,6 @@
 # hydra-linear-attention
 Implementation of the thingy described in this paper: https://arxiv.org/pdf/2209.07484.pdf
-- Coudn't see any code anywhere for this, it's pretty short and simple, create an issue is incorrect as I only skimmed the paper
+- Coudn't see any code anywhere for this, though its just linear attention with heads equeal to the feature dim, it's pretty short and simple, create an issue is incorrect as I only skimmed the paper,
 idk if it's descriptive to say stuff like this is similar to regular attention - I see it being more similar to something like squeeze and excite layers
 
 
