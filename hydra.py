@@ -1,4 +1,3 @@
-from einops import rearrange
 import torch.nn as nn
 
 class HydraAttention(nn.Module):
