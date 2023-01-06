@@ -6,13 +6,13 @@ class HydraAttention(nn.Module):
         super(HydraAttention, self).__init__()
         self.d_model = d_model
         self.qkv = nn.Linear(d_model, d_model * 3)
+        self.out = nn.Linear(d_model, d_model)
 
     def forward(self, x):
         '''x: (B, T, D)'''
-        qkv = self.qkv(x)
-        q,k,v = rearrange(qkv, 'b n d -> b d n ()').chunk(3, dim=1)
-        knorm = k / (k.norm(dim=-2, keepdim=True))
-        qnorm = q / (q.norm(dim=-2, keepdim=True))
-        kv = knorm.transpose(-2,-1).matmul(v)
-        out = qnorm * kv
-        return rearrange(out, 'b d n () -> b n d')
+        q, k, v = self.qkv(x).chunk(3, dim=-1)
+        q = q / q.norm(dim=-1, keepdim=True)
+        k = k / k.norm(dim=-1, keepdim=True)
+        kv = (k * v).sum(dim=-2, keepdim=True)
+        out = q * kv
+        return self.out(out)
