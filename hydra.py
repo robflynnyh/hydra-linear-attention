@@ -1,11 +1,21 @@
-import torch.nn as nn
+import torch.nn as nn, torch
 
 class HydraAttention(nn.Module):
-    def __init__(self, d_model):
+    def __init__(self, d_model, output_layer='scale_and_bias'):
+        '''
+        output_layer: 'scale_and_bias' | 'linear' | 'none'
+        '''
         super(HydraAttention, self).__init__()
         self.d_model = d_model
         self.qkv = nn.Linear(d_model, d_model * 3)
-        self.out = nn.Linear(d_model, d_model)
+        if output_layer == 'scale_and_bias':
+            self.scale = nn.Parameter(torch.ones(1, 1, d_model))
+            self.bias = nn.Parameter(torch.zeros(1, 1, d_model))
+            self.out = lambda x: x * self.scale + self.bias
+        elif output_layer == 'linear':
+            self.out = nn.Linear(d_model, d_model)
+        elif output_layer == 'none':
+            self.out = nn.Identity()
 
     def forward(self, x):
         '''x: (B, T, D)'''
